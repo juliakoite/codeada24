@@ -15,5 +15,5 @@ def parse_file(file_name):
         )
 
 
-    data = response.json()
+    data = response.text
     print(data)
