@@ -53,7 +53,7 @@ def pie_chart(items_dict):
    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
    st.pyplot(fig1)
-
+   return total
 
 
 #dict/map charges -> amounts
@@ -117,7 +117,7 @@ if uploaded_file is not None:
         styled_df = df.style.apply(highlight_duplicates, axis=1)
         st.dataframe(styled_df, key="styled_df")
 
-        pie_chart(items_dict)
+        total = pie_chart(items_dict)
         def create_checkbox_columns(df):
             checkboxes = []
             total_items = len(df)
