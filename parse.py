@@ -1,8 +1,12 @@
 import requests
 import json
+import os
 
+from dotenv import load_dotenv
 
-API_Key = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMjRiZGE5NmItZjUzNS00MjBjLThjZDQtYjllYjYyNTE2OGQwIiwidHlwZSI6ImFwaV90b2tlbiJ9.JzTeIYcTmrEHgUdWrLHWIxnBaQRBNqfIr-TNxTRkVEw'
+load_dotenv()
+
+api_key = os.environ.get("EDIN_API_KEY")
 url = "https://api.edenai.run/v2/ocr/financial_parser"
 def parse_file(file_name):
 #make file path user's input file 
@@ -22,7 +26,7 @@ def parse_file(file_name):
     }
 
         headers = {
-        'Authorization': f'Bearer {API_Key}',
+        'Authorization': f'Bearer {api_key}',
         }
 
     # Send the POST request with the file
