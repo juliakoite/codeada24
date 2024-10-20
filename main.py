@@ -3,6 +3,9 @@ import pandas as pd
 from io import StringIO
 from parse import parse_file
 
+from bill_summary import create_bill_summary, create_detailed_table
+from ai_explain import get_medical_explanation
+
 
 
 
@@ -46,6 +49,24 @@ if uploaded_file is not None:
 
         styled_df = st.session_state["styled_df"]
         st.dataframe(styled_df, selection_mode='multi-row', on_select=callback, key="styled_df")
+
+        # adding AI explanation for code
+        if 'explain_index' not in st.session_state:
+            st.session_state.explain_index = None
+        
+        # create interactive table with explanation buttons
+        interactive_df = create_detailed_table(items_dict)
+        
+        # ai explanations
+        for idx, row in interactive_df.iterrows():
+            if row['Actions']:
+                st.session_state.explain_index = idx
+        
+        if st.session_state.explain_index is not None:
+            procedure = interactive_df.iloc[st.session_state.explain_index]['Service']
+            with st.expander(f"Explanation for {procedure}"):
+                explanation = get_medical_explanation(procedure)
+                st.write(explanation)
 
 
 
