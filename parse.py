@@ -63,6 +63,9 @@ def parse_file(file_name):
             files={'file': f}
         )
 
+
+    data = response.text
+    print(data)
     
 
 response = requests.post(url, json=payload, headers=headers)
