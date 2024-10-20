@@ -1,5 +1,3 @@
-#OPEN_AI_KEY = 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
-
 
 from openai import OpenAI
 import requests
