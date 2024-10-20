@@ -8,6 +8,31 @@ from matplotlib import pyplot as plt
 
 import numpy as np
 
+from streamlit_extras.stylable_container import stylable_container
+
+
+def get_summary(items_dict, amounts, duplicates_set):
+    charges = items_dict.keys()
+    st.write("## Summary of bill")
+    with stylable_container(
+            key="container_with_border",
+            css_styles="""
+                {
+                    border: 1px solid rgba(49, 51, 63, 0.2);
+                    border-radius: 0.5rem;
+                    padding: 10px;
+                    background-color: #e591a3;
+                    width: 950;
+                }
+                """,
+        ):
+        st.write("Here are your charges:")
+        charge_list = []
+        for charge in charges:
+            charge_list.append(charge)
+        st.write(str(charge_list))
+        st.write("Here are your duplicate charges (recommend double checking these charges to make sure you haven't been overcharged)")
+        st.write(str(duplicates_set))
 
 
 def pie_chart(items_dict): 
@@ -60,7 +85,8 @@ def calculator(items_dict):
    
 
 st.title("INSERT WEBSITE TITLE HERE")
-uploaded_file = st.file_uploader("Upload your medical bill", ['png', 'jpg'])
+st.write("### Upload your itemized medical bill")
+uploaded_file = st.file_uploader("",['png', 'jpg'])
 if uploaded_file is not None:
      print("Filename:" + uploaded_file.name)
      print("Type" + uploaded_file.type)
@@ -82,15 +108,9 @@ if uploaded_file is not None:
             "Amount($)" :amounts
         })
 
-        
-
-
-         
-
-
         def highlight_duplicates(row):
             if row['Charges'] in duplicates_set:
-                return['background-color: red'] * len(row)
+                return['background-color: #b6465f'] * len(row)
             else:
                 return[''] * len(row)
             
@@ -98,21 +118,48 @@ if uploaded_file is not None:
         st.dataframe(styled_df, key="styled_df")
 
         pie_chart(items_dict)
+        def create_checkbox_columns(df):
+            checkboxes = []
+            total_items = len(df)
+            items_per_column = math.ceil(total_items / 2)
 
-        st.write("Which charges would you like to be explained to you?")
-        checkboxes =[]
-        for index, row in df.iterrows():
-            is_checked = st.checkbox(f"{row['Charges']}", key=f"checkbox_{index}")
-            if is_checked:
-                checkboxes.append(df.loc[index]['Charges'])
-        print(checkboxes)
+            col1, col2 = st.columns(2)
+
+            for index, row in df.iterrows():
+                if index < items_per_column:
+                    with col1:
+                        is_checked = st.checkbox(f"{row['Charges']}", key=f"checkbox_{index}")
+                else:
+                    with col2:
+                        is_checked = st.checkbox(f"{row['Charges']}", key=f"checkbox_{index}")
+                
+                if is_checked:
+                    checkboxes.append(df.loc[index]['Charges'])
+
+            return checkboxes
+
+        st.write("## Which charges would you like to be explained to you?")
+        checkboxes = create_checkbox_columns(df)
+
         ai_response = ask_ai(checkboxes)
-        st.write(ai_response)
-
-        for charge in ai_response['charges']:
-            st.write("Charge: " + charge['Procedure'])
-            st.write("Description: " + charge['Description'])
-            st.write("Validity: " + charge['Validity'])
+        with stylable_container(
+            key="container_with_border",
+            css_styles="""
+                {
+                    border: 1px solid rgba(49, 51, 63, 0.2);
+                    border-radius: 0.5rem;
+                    padding: 10px;
+                    background-color: #e591a3;
+                    width: 950;
+                }
+                """,
+            ):
+            for charge in ai_response['charges']:
+                st.write("Charge: " + charge['Procedure'])
+                st.write("Description: " + charge['Description'])
+                st.write("Validity: " + charge['Validity'])
+        if st.button("Get summary of bill"):
+            get_summary(items_dict, amounts, duplicates_set)
 
 
 
