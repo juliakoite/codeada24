@@ -10,8 +10,8 @@ import numpy as np
 
 from streamlit_extras.stylable_container import stylable_container
 
-
-def get_summary(items_dict, amounts, duplicates_set):
+st.set_page_config(layout="wide")
+def get_summary(items_dict, amounts, duplicates_set, total):
     charges = items_dict.keys()
     st.write("## Summary of bill")
     with stylable_container(
@@ -26,13 +26,20 @@ def get_summary(items_dict, amounts, duplicates_set):
                 }
                 """,
         ):
-        st.write("Here are your charges:")
+        st.write("**Here are your charges:**")
         charge_list = []
         for charge in charges:
             charge_list.append(charge)
-        st.write(str(charge_list))
-        st.write("Here are your duplicate charges (recommend double checking these charges to make sure you haven't been overcharged)")
-        st.write(str(duplicates_set))
+        charge_bullet_list = "\n".join([f"- {charge}" for charge in charge_list])
+        st.markdown(charge_bullet_list)
+        #st.write(str(charge_list))
+        st.write("**Here are your duplicate charges (recommend double checking these charges to make sure you haven't been overcharged)**")
+        duplicates_bullet_list = "\n".join([f"- {duplicate}" for duplicate in duplicates_set])
+        st.markdown(duplicates_bullet_list)
+
+        st.write(f"**Here is your total: {total}**")
+        #st.write(str(duplicates_set))
+        #st.write("Here is your total: " + str(total))
 
 
 def pie_chart(items_dict): 
@@ -82,9 +89,9 @@ def calculator(items_dict):
     return total, to_return   
 
    
-   
 
-st.title("INSERT WEBSITE TITLE HERE")
+
+st.title("Bill Buddy : Your Medical Bill Assistant")
 st.write("### Upload your itemized medical bill")
 uploaded_file = st.file_uploader("",['png', 'jpg'])
 if uploaded_file is not None:
@@ -115,7 +122,9 @@ if uploaded_file is not None:
                 return[''] * len(row)
             
         styled_df = df.style.apply(highlight_duplicates, axis=1)
-        st.dataframe(styled_df, key="styled_df")
+
+        st.write("**Here are your charges (highlighted = double charges)**")
+        st.dataframe(styled_df, key="styled_df", hide_index=True)
 
         total = pie_chart(items_dict)
         def create_checkbox_columns(df):
@@ -159,7 +168,7 @@ if uploaded_file is not None:
                 st.write("Description: " + charge['Description'])
                 st.write("Validity: " + charge['Validity'])
         if st.button("Get summary of bill"):
-            get_summary(items_dict, amounts, duplicates_set)
+            get_summary(items_dict, amounts, duplicates_set, total)
 
 
 
