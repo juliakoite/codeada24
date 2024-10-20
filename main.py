@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from io import StringIO
 from parse import parse_file
+from open_ai import ask_ai
 
 
 
@@ -36,16 +37,28 @@ if uploaded_file is not None:
                 return[''] * len(row)
             
         styled_df = df.style.apply(highlight_duplicates, axis=1)
+        st.dataframe(styled_df, key="styled_df")
 
-        if "styled_df" not in st.session_state:
-            st.session_state["styled_df"] = styled_df
-        
-        def callback():
-            st.write(st.session_state["styled_df"])
-            print(st.session_state["styled_df"])
+        st.write("Which charges would you like to be explained to you?")
+        checkboxes =[]
+        for index, row in df.iterrows():
+            is_checked = st.checkbox(f"{row['Charges']}", key=f"checkbox_{index}")
+            if is_checked:
+                checkboxes.append(df.loc[index]['Charges'])
+        print(checkboxes)
+        ai_response = ask_ai(checkboxes)
+        st.write(ai_response)
 
-        styled_df = st.session_state["styled_df"]
-        st.dataframe(styled_df, selection_mode='multi-row', on_select=callback, key="styled_df")
+        '''
+        if checkboxes:
+            st.write("Selected rows")
+            st.dataframe(df.loc[checkboxes])
+        else:
+            st.write("No rows selected")
+
+        if st.button('Submit'):
+            print(checkboxes)'''
+
 
 
 
