@@ -49,10 +49,10 @@ def pie_chart(items_dict):
 
    #ex = amounts.sort()
 
-   fig1, ax1 = plt.subplots(figsize=(3, 4), facecolor = '#EBD4CB')
+   fig1, ax1 = plt.subplots(figsize=(2, 3), facecolor = '#EBD4CB')
    percents = np.array(amounts)
    ax1.pie(percents, labels=labels, colors=['#DA9F93', '#B6465F', '#890620', '#e591a3'], autopct='%1.1f%%', pctdistance = .9,
-        shadow=False, startangle=45)
+        shadow=False, startangle=45, textprops={'fontsize': 4})
    ax1.axis('equal')
    ax1.set_facecolor('#EBD4CB')  # Equal aspect ratio ensures that pie is drawn as a circle.
    st.pyplot(fig1)
@@ -111,6 +111,8 @@ if uploaded_file is not None:
             "Amount($)" :amounts
         })
 
+
+
         def highlight_duplicates(row):
             if row['Charges'] in duplicates_set:
                 return['background-color: #b6465f'] * len(row)
@@ -118,11 +120,16 @@ if uploaded_file is not None:
                 return[''] * len(row)
             
         styled_df = df.style.apply(highlight_duplicates, axis=1)
+        col1, col2 = st.columns(2)
 
-        st.write("**Here are your charges (highlighted = double charges)**")
-        st.dataframe(styled_df, key="styled_df", hide_index=True)
 
-        total = pie_chart(items_dict)
+        with col1:
+            st.write("**Here are your charges (highlighted = double charges)**")
+            st.dataframe(styled_df, key="styled_df", hide_index=True)
+        with col2:
+            total = pie_chart(items_dict)
+
+
         def create_checkbox_columns(df):
             checkboxes = []
             total_items = len(df)
