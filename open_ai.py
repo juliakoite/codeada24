@@ -44,9 +44,4 @@ def ask_ai(charge):
         })
         #print("Description: " + charge['description'])
         #descriptions.append(charge['description'])
-
-    print("RETURN JSON: ")
-    print(return_json)
     return return_json
-
-ask_ai("['ARTERIAL PUNCTURE', 'VENIPUNCTURE', 'CHEST PHYSIO SUBSQ']")

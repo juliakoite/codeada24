@@ -51,27 +51,3 @@ def parse_file(file_name):
 
         else:
             print(f"Error: {response.status_code} - {response.text}")
-    
-
-
-
-'''
-    with open(file, 'rb') as f:
-        response = requests.post(
-            'https://api.edenai.run/v1/pretrained/financial_document_parsing',
-            headers={'Authorization': f'Bearer {API_Key}'},
-            files={'file': f}
-        )
-
-
-    data = response.text
-    print(data)
-    
-
-response = requests.post(url, json=payload, headers=headers)
-
-print(response.text)
-
-
-    data = response.text
-    print(data)'''
