@@ -47,17 +47,10 @@ if uploaded_file is not None:
                 checkboxes.append(df.loc[index]['Charges'])
         print(checkboxes)
         ai_response = ask_ai(checkboxes)
-        st.write(ai_response)
-
-        '''
-        if checkboxes:
-            st.write("Selected rows")
-            st.dataframe(df.loc[checkboxes])
-        else:
-            st.write("No rows selected")
-
-        if st.button('Submit'):
-            print(checkboxes)'''
+        for charge in ai_response['charges']:
+            st.write("Charge: " + charge['Procedure'])
+            st.write("Description: " + charge['Description'])
+            st.write("Validity: " + charge['Validity'])
 
 
 

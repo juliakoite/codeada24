@@ -35,9 +35,9 @@ def ask_ai(charge):
     response_json = json.loads(response.choices[0].message.content)
     print(response_json)
     descriptions = []
-    return_json = {}
+    return_json = {"charges" : []}
     for charge in response_json['charges']:
-        return_json.update({
+        return_json['charges'].append({
             'Procedure' : charge['procedure'],
             'Description': charge['description'],
             'Validity': charge['validity']
